@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PostTheJob - Roman Alba Mockup</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --background: #f5f2eb;
+      --foreground: #1c1917;
+      --card: rgba(255, 255, 255, 0.7);
+      --muted: #e8e4db;
+      --muted-foreground: #6b6560;
+      --primary: #16a34a;
+      --primary-foreground: #ffffff;
+      --border: #d4cfc4;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      line-height: 1.6;
+    }
+    
+    /* Roman Alba - Weathered plaster background */
+    .alba-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: 
+        /* Subtle noise/grain texture */
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"),
+        /* Base gradient for aged look */
+        radial-gradient(ellipse 120% 80% at 50% 20%, #faf8f3 0%, #f0ebe0 40%, #e8e2d5 100%);
+      opacity: 0.4;
+    }
+    
+    /* Subtle cracks/weathering overlay */
+    .weathering {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background-image: 
+        /* Subtle crack lines */
+        linear-gradient(125deg, transparent 40%, rgba(180, 170, 155, 0.03) 40.5%, rgba(180, 170, 155, 0.03) 41%, transparent 41.5%),
+        linear-gradient(235deg, transparent 60%, rgba(180, 170, 155, 0.04) 60.5%, rgba(180, 170, 155, 0.04) 61%, transparent 61.5%),
+        linear-gradient(185deg, transparent 30%, rgba(180, 170, 155, 0.02) 30.5%, transparent 31%);
+      /* Uneven aging - darker at edges */
+      mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, transparent 10%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.5) 100%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, transparent 10%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.5) 100%);
+    }
+    
+    /* Edge shadow for mounted look */
+    .edge-shadow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      box-shadow: inset 0 0 100px rgba(0,0,0,0.08), inset 0 0 200px rgba(0,0,0,0.03);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    
+    /* Hero */
+    .hero {
+      position: relative;
+      z-index: 10;
+      padding: 5rem 1rem 4rem;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+    }
+    
+    .hero h1 .italic {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--primary);
+      margin: 0 0.5rem;
+    }
+    
+    .hero p {
+      color: var(--muted-foreground);
+      font-size: 1.25rem;
+      max-width: 42rem;
+      margin: 0 auto 2rem;
+    }
+    
+    /* Email form */
+    .email-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-width: 28rem;
+      margin: 0 auto;
+    }
+    
+    @media (min-width: 640px) {
+      .email-form {
+        flex-direction: row;
+      }
+    }
+    
+    .email-form input,
+    .email-form select {
+      flex: 1;
+      padding: 1rem 1.25rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.8);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    
+    .email-form select {
+      flex: 0 0 auto;
+      min-width: 160px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b6560' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+      cursor: pointer;
+    }
+    
+    .email-form input:focus,
+    .email-form select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+    }
+    
+    .email-form button {
+      padding: 1rem 1.5rem;
+      border-radius: 0.75rem;
+      border: none;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+    }
+    
+    .email-form button:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    
+    .subtext {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+    
+    /* Sections */
+    section {
+      position: relative;
+      z-index: 10;
+      padding: 4rem 0;
+    }
+    
+    section.muted-bg {
+      background: rgba(232, 228, 219, 0.4);
+    }
+    
+    .section-title {
+      font-size: clamp(1.75rem, 5vw, 2.5rem);
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    
+    .section-subtitle {
+      color: var(--muted-foreground);
+      font-size: 1.25rem;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    /* How it works */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .step {
+      text-align: center;
+    }
+    
+    .step-icon {
+      width: 4rem;
+      height: 4rem;
+      background: rgba(22, 163, 74, 0.1);
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    
+    .step-icon svg {
+      width: 2rem;
+      height: 2rem;
+      color: var(--primary);
+    }
+    
+    .step h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .step p {
+      color: var(--muted-foreground);
+    }
+    
+    /* Cards */
+    .glass-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      backdrop-filter: blur(8px);
+    }
+    
+    /* Tools grid */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .tool-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    
+    .tool-card:hover {
+      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    .tool-card .icon {
+      width: 3rem;
+      height: 3rem;
+      background: rgba(22, 163, 74, 0.1);
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    
+    .tool-card .icon svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary);
+    }
+    
+    .tool-card h3 {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .tool-card p {
+      color: var(--muted-foreground);
+      font-size: 0.875rem;
+    }
+    
+    /* Pricing */
+    .pricing-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      backdrop-filter: blur(8px);
+    }
+    
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      text-align: center;
+    }
+    
+    .pricing-item .amount {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .pricing-item .label {
+      color: var(--muted-foreground);
+      margin-top: 0.5rem;
+    }
+    
+    .pricing-footer {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted-foreground);
+    }
+    
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 10;
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(8px);
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+    
+    @media (min-width: 640px) {
+      .footer-content {
+        flex-direction: row;
+      }
+    }
+    
+    /* Phone mockup */
+    .phone-mockup {
+      width: 280px;
+      background: var(--card);
+      border-radius: 2.5rem;
+      padding: 0.75rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--border);
+      margin: 0 auto;
+      backdrop-filter: blur(8px);
+    }
+    
+    .phone-screen {
+      background: var(--background);
+      border-radius: 2rem;
+      overflow: hidden;
+    }
+    
+    .phone-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1.5rem;
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+    
+    .notification {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1rem;
+      margin: 0.75rem 1rem;
+    }
+    
+    .notification-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    
+    .notification-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      background: rgba(22, 163, 74, 0.1);
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .notification-icon svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--primary);
+    }
+    
+    .notification-icon.grey {
+      background: rgba(107, 101, 96, 0.1);
+    }
+    
+    .notification-icon.grey svg {
+      color: #6b6560;
+    }
+    
+    .notification-content {
+      flex: 1;
+    }
+    
+    .notification-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    
+    .notification-time {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      font-weight: 400;
+    }
+    
+    .notification-text {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      margin-top: 0.25rem;
+    }
+    
+    .notification-price {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+    
+    .phone-buttons {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem 1rem;
+    }
+    
+    .phone-btn {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .phone-btn.primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .phone-btn.secondary {
+      background: var(--muted);
+      color: var(--foreground);
+      border: 1px solid var(--border);
+    }
+    
+    /* Two column layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    @media (min-width: 1024px) {
+      .two-col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .feature-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      background: rgba(22, 163, 74, 0.1);
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .feature-icon svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--primary);
+    }
+    
+    .feature-item h4 {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .feature-item p {
+      color: var(--muted-foreground);
+    }
+    
+    /* Numbered steps */
+    .numbered-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .numbered-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .step-number {
+      width: 2rem;
+      height: 2rem;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+    
+    .numbered-step h4 {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .numbered-step p {
+      color: var(--muted-foreground);
+    }
+    
+    /* Escrow phone */
+    .escrow-header {
+      background: var(--primary);
+      padding: 1.5rem;
+      text-align: center;
+      color: white;
+    }
+    
+    .escrow-header svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      margin: 0 auto 0.5rem;
+    }
+    
+    .escrow-header .label {
+      font-size: 0.875rem;
+      opacity: 0.8;
+    }
+    
+    .escrow-header .amount {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+    
+    .escrow-steps {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .escrow-step {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: var(--muted);
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+    }
+    
+    .escrow-step svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--primary);
+    }
+    
+    .escrow-step .text {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .escrow-step .date {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+    
+    .escrow-step.success {
+      background: rgba(22, 163, 74, 0.1);
+      border-color: rgba(22, 163, 74, 0.2);
+    }
+    
+    .escrow-step.success .text {
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Roman Alba background layers -->
+  <div class="alba-bg"></div>
+  <div class="weathering"></div>
+  <div class="edge-shadow"></div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>
+      Your next <span class="italic">job</span> is
+      <br>already looking for you.
+    </h1>
+    <p>Get notified of leads in your area. Bid on jobs you want. Get paid - guaranteed. No more chasing.</p>
+    
+    <form class="email-form" id="waitlist-form">
+      <select id="user-type" required>
+        <option value="" disabled selected>I'm a...</option>
+        <option value="tradesperson">Tradesperson</option>
+        <option value="homeowner">Homeowner</option>
+      </select>
+      <input type="email" id="email-input" placeholder="Enter your email" required>
+      <button type="submit" id="submit-btn">
+        Join Waitlist
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </form>
+    <p class="subtext">Be the first to know when we launch</p>
+  </section>
+
+  <!-- How it works -->
+  <section class="container">
+    <h2 class="section-title">How it works</h2>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </div>
+        <h3>Get notified</h3>
+        <p>Jobs in your area come straight to you. No searching, no refreshing.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+        </div>
+        <h3>Bid or get booked</h3>
+        <p>Set your price on jobs you want - or get booked directly by homeowners.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <h3>Get paid</h3>
+        <p>Payment held in escrow. Finish the job, money hits your account. No chasing.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Leads section with phone mockup -->
+  <section class="muted-bg">
+    <div class="container">
+      <div class="two-col">
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div class="phone-status">
+              <span>9:41</span>
+              <span>●●●●</span>
+            </div>
+            <div class="notification">
+              <div class="notification-header">
+                <div class="notification-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  </svg>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">
+                    New Job Alert
+                    <span class="notification-time">now</span>
+                  </div>
+                  <div class="notification-text">Bathroom renovation - 2.3km</div>
+                  <div class="notification-price">$2,400 - $3,200</div>
+                </div>
+              </div>
+            </div>
+            <div class="notification" style="opacity: 0.8;">
+              <div class="notification-header">
+                <div class="notification-icon grey">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">
+                    Direct Booking
+                    <span class="notification-time">2m</span>
+                  </div>
+                  <div class="notification-text">Sarah M. wants to book you</div>
+                </div>
+              </div>
+            </div>
+            <div class="phone-buttons">
+              <button class="phone-btn primary">View Jobs</button>
+              <button class="phone-btn secondary">My Bids</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h2 class="section-title" style="text-align: left;">Leads on autopilot.</h2>
+          <p style="color: var(--muted-foreground); font-size: 1.25rem; margin-bottom: 2rem;">
+            Jobs in your area, straight to your phone. No searching. No refreshing. No hunting.
+          </p>
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </div>
+              <div>
+                <h4>Instant notifications</h4>
+                <p>New jobs ping your phone the moment they're posted.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                  <line x1="12" y1="18" x2="12.01" y2="18"/>
+                </svg>
+              </div>
+              <div>
+                <h4>Bid from anywhere</h4>
+                <p>On a job site? On lunch? Submit bids in seconds.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <div>
+                <h4>Get booked directly</h4>
+                <p>Homeowners browse profiles and book you - no bidding required.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Simple pricing. No surprises.</h2>
+      <p class="section-subtitle">15% when the job is done. That's it.</p>
+      <div class="pricing-card">
+        <div class="pricing-grid">
+          <div class="pricing-item">
+            <div class="amount">Free</div>
+            <div class="label">To join</div>
+          </div>
+          <div class="pricing-item">
+            <div class="amount">$0</div>
+            <div class="label">Per lead</div>
+          </div>
+          <div class="pricing-item">
+            <div class="amount">15%</div>
+            <div class="label">On completion</div>
+          </div>
+        </div>
+        <div class="pricing-footer">
+          Other platforms charge you before you earn anything. We only succeed when you do.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <span>© 2024 Post the Job Inc. All rights reserved.</span>
+      <span>Hand-built in the Neighbourhood</span>
+    </div>
+  </footer>
+</body>
+</html>
